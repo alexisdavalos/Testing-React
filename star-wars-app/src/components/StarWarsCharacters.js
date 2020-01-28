@@ -5,23 +5,26 @@ import { getData } from "../api";
 import "./star-wars-characters.css";
 
 export default function StarWarsCharacters() {
-  const [url, setUrl] = useState("https://swapi.co/api/people");
   const [previous, setPrevious] = useState();
   const [next, setNext] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [characters, setCharacters] = useState([]);
+  const [category, setCategory]= useState('people')
+  const [url, setUrl] = useState(`https://swapi.co/api/${category}`);
   useEffect(() => {
     setIsLoading(true);
     const getCharacters = async () => {
-      const characters = await getData(url);
-      console.log(characters);
+      const characters = await getData(`https://swapi.co/api/${category}`);
+      console.log('Calling from...', url)
+      console.log('API Promise:',characters);
       setNext(characters.next);
+      console.log('Next Object:', characters.next)
       setPrevious(characters.previous);
       setCharacters(characters.results);
       setIsLoading(false);
     };
     getCharacters();
-  }, [url]);
+  }, [category]);
 
   const goToNext = e => {
     e.preventDefault();
@@ -32,7 +35,12 @@ export default function StarWarsCharacters() {
     e.preventDefault();
     setUrl(previous);
   };
-
+  console.log('Category State:', category )
+  const handleChanges = e =>{
+    e.preventDefault()
+    setCategory(e.target.value)
+  }
+  //selection array
   return (
     <div>
       {isLoading ? (
@@ -45,6 +53,22 @@ export default function StarWarsCharacters() {
         />
       ) : (
         <>
+        <form>
+          <select
+          type="select"
+          name="category"
+          placeholder="Categories"
+          value={category}
+          onChange={(e) => handleChanges(e)}
+          >
+            <option>Choose Category</option>
+            <option>people</option>
+            <option>planets</option>
+            <option>starships</option>
+            <option>vehicles</option>
+            <option>species</option>
+          </select>
+        </form>
           {characters.map(character => (
             <div data-testid='character' key={character.url}>{character.name}</div>
           ))}
