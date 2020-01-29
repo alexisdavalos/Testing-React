@@ -24,7 +24,7 @@ export default function StarWarsCharacters() {
       setIsLoading(false);
     };
     getCharacters();
-  }, [category]);
+  }, [category, url]);
 
   const goToNext = e => {
     e.preventDefault();
